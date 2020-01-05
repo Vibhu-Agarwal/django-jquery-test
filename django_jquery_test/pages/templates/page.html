@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>Page Page</title>
+    <script  src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+</head>
+<body>
+    <button id="myid">Do Async Task (on Server)</button>
+    <p id="clicky">Click me while server performs something.</p>
+
+    <script>
+        $("#myid").click(e => {
+            $.ajax({
+                type: "POST",
+                headers: {
+                    "X-CSRFTOKEN": "{{ csrf_token }}"
+                },
+                url: '{% url "pages:task_view" %}',
+                data: {
+                    someKey: "someValue"
+                },
+                success: result => {
+                    console.log(result);
+                    window.location = '{% url "pages:redirected_page" %}';
+                },
+                error: result => alert('error')
+            });
+          });
+    </script>
+
+    <script>
+        document.getElementById("clicky").onclick = () => console.log('You clicked!');
+    </script>
+</body>
+</html>
